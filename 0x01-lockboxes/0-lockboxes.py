@@ -1,37 +1,27 @@
+#!/usr/bin/python3
+"""
+Module to determine if all lockboxes can be unlocked.
+"""
+
 def canUnlockAll(boxes):
-    # Number of boxes
+    """
+    Determines if all boxes can be unlocked starting from the first box.
+
+    Args:
+        boxes (list of list of int): A list where each element is a list of keys contained in that box.
+
+    Returns:
+        bool: True if all boxes can be unlocked, False otherwise.
+    """
     n = len(boxes)
+    opened_boxes = set([0])
+    keys = set(boxes[0])
     
-    # Set to track visited boxes
-    visited = set()
-    
-    # Queue for BFS
-    queue = [0]
-    
-    while queue:
-        # Get the current box
-        box = queue.pop(0)
-        
-        if box not in visited:
-            # Mark the box as visited
-            visited.add(box)
-            
-            # Add all the keys in the current box to the queue
-            for key in boxes[box]:
-                if key < n and key not in visited:
-                    queue.append(key)
-    
-    # Check if all boxes have been visited
-    return len(visited) == n
+    while keys:
+        key = keys.pop()
+        if key not in opened_boxes and 0 <= key < n:
+            opened_boxes.add(key)
+            keys.update(boxes[key])
 
-# Test cases
-if __name__ == "__main__":
-    boxes = [[1], [2], [3], [4], []]
-    print(canUnlockAll(boxes))  # Expected: True
-
-    boxes = [[1, 4, 6], [2], [0, 4, 1], [5, 6, 2], [3], [4, 1], [6]]
-    print(canUnlockAll(boxes))  # Expected: True
-
-    boxes = [[1, 4], [2], [0, 4, 1], [3], [], [4, 1], [5, 6]]
-    print(canUnlockAll(boxes))  # Expected: False
+    return len(opened_boxes) == n
 
