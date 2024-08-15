@@ -1,48 +1,37 @@
-mport sys
-import signal
+#!/usr/bin/python3
+'''This script reads stdin line by line and computes metrics'''
 
-# Initialize variables
-total_file_size = 0
-status_code_count = {}
 
-def print_stats():
-    """Prints the accumulated statistics."""
-    print(f"File size: {total_file_size}")
-    for code in sorted(status_code_count.keys()):
-        print(f"{code}: {status_code_count[code]}")
+import sys
 
-def signal_handler(sig, frame):
-    """Handles the keyboard interrupt signal (CTRL + C)."""
-    print_stats()
-    sys.exit(0)
-
-# Register the signal handler
-signal.signal(signal.SIGINT, signal_handler)
+cache = {'200': 0, '301': 0, '400': 0, '401': 0,
+         '403': 0, '404': 0, '405': 0, '500': 0}
+total_size = 0
+counter = 0
 
 try:
-    for i, line in enumerate(sys.stdin, 1):
-        # Parse the line to extract necessary information
-        parts = line.split()
-        if len(parts) < 7:
-            continue
-        
-        try:
-            file_size = int(parts[-1])
-            status_code = int(parts[-2])
-            total_file_size += file_size
-            if status_code in [200, 301, 400, 401, 403, 404, 405, 500]:
-                if status_code in status_code_count:
-                    status_code_count[status_code] += 1
-                else:
-                    status_code_count[status_code] = 1
-        except ValueError:
-            continue
+    for line in sys.stdin:
+        line_list = line.split(" ")
+        if len(line_list) > 4:
+            code = line_list[-2]
+            size = int(line_list[-1])
+            if code in cache.keys():
+                cache[code] += 1
+            total_size += size
+            counter += 1
 
-        # Print stats every 10 lines
-        if i % 10 == 0:
-            print_stats()
-except Exception as e:
-    print(f"Error: {e}")
+        if counter == 10:
+            counter = 0
+            print('File size: {}'.format(total_size))
+            for key, value in sorted(cache.items()):
+                if value!= 0:
+                    print('{}: {}'.format(key, value))
+
+except ValueError as e:
+    print("An error occurred: ", e)
+
 finally:
-    print_stats()
-
+    print('File size: {}'.format(total_size))
+    for key, value in sorted(cache.items()):
+        if value!= 0:
+            print('{}: {}'.format(key, value))
