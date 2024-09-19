@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-'''Given a collection of coins with varying values,
+'''Given an assortment of coins with distinct values,
 
-    determine the minimal number of coins required to achieve
+    determine the minimum number of coins necessary to achieve
 
-    a specified total amount.
+    a specified total sum.
 
 '''
 
@@ -14,11 +14,11 @@ def makeChange(coins, total):
 
     '''
 
-    Return: minimal number of coins required to reach total
+    Return: minimum number of coins necessary to reach the total.
 
-    If total is less than or equal to 0, return 0
+    If the total is 0 or less, return 0.
 
-    If the total cannot be achieved with the available coins, return -1
+    If the total cannot be matched with any combination of coins, return -1.
 
     '''
 
@@ -26,27 +26,27 @@ def makeChange(coins, total):
 
         return 0
 
-    table = [sys.maxsize for _ in range(total + 1)]
+    dp = [sys.maxsize for _ in range(total + 1)]
 
-    table[0] = 0
+    dp[0] = 0
 
-    m = len(coins)
+    num_coins = len(coins)
 
-    for i in range(1, total + 1):
+    for amount in range(1, total + 1):
 
-        for j in range(m):
+        for coin in range(num_coins):
 
-            if coins[j] <= i:
+            if coins[coin] <= amount:
 
-                subres = table[i - coins[j]]
+                sub_result = dp[amount - coins[coin]]
 
-                if subres != sys.maxsize and subres + 1 < table[i]:
+                if sub_result != sys.maxsize and sub_result + 1 < dp[amount]:
 
-                    table[i] = subres + 1
+                    dp[amount] = sub_result + 1
 
-    if table[total] == sys.maxsize:
+    if dp[total] == sys.maxsize:
 
         return -1
 
-    return table[total]
+    return dp[total]
 
