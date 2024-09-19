@@ -1,24 +1,52 @@
 #!/usr/bin/python3
 
+'''Given a collection of coins with varying values,
+
+    determine the minimal number of coins required to achieve
+
+    a specified total amount.
+
+'''
+
+import sys
+
 def makeChange(coins, total):
-    """Calculate the fewest number of coins needed to meet total."""
+
+    '''
+
+    Return: minimal number of coins required to reach total
+
+    If total is less than or equal to 0, return 0
+
+    If the total cannot be achieved with the available coins, return -1
+
+    '''
+
     if total <= 0:
+
         return 0
-    
-    # Create a list to store the minimum coins needed for each amount
-    dp = [float('inf')] * (total + 1)
-    dp[0] = 0  # No coins needed to make total 0
 
-    # Iterate over each coin
-    for coin in coins:
-        for amount in range(coin, total + 1):
-            dp[amount] = min(dp[amount], dp[amount - coin] + 1)
+    table = [sys.maxsize for _ in range(total + 1)]
 
-    # Check if total can be made with available coins
-    return dp[total] if dp[total] != float('inf') else -1
+    table[0] = 0
 
-if __name__ == "__main__":
-    # Example usage
-    print(makeChange([1, 2, 25], 37))  # Expected output: 4 (25 + 10 + 2)
-    print(makeChange([1256, 54, 48, 16, 102], 1453))  # Expected output: -1
+    m = len(coins)
+
+    for i in range(1, total + 1):
+
+        for j in range(m):
+
+            if coins[j] <= i:
+
+                subres = table[i - coins[j]]
+
+                if subres != sys.maxsize and subres + 1 < table[i]:
+
+                    table[i] = subres + 1
+
+    if table[total] == sys.maxsize:
+
+        return -1
+
+    return table[total]
 
