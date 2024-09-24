@@ -1,63 +1,40 @@
 #!/usr/bin/python3
-''' Island Perimeter'''
-
+"""
+Module to calculate the perimeter of an island in a grid.
+"""
 
 def island_perimeter(grid):
-    '''Returns the perimeter of Island described in grid'''
-    counter = 0
-    grid_max = len(grid) - 1  # index of the last list in the grid
-    lst_max = len(grid[0]) - 1  # index of the last square in list
+    """
+    Calculates the perimeter of the island in the grid.
 
-    for lst_idx, lst in enumerate(grid):
-        for land_idx, land in enumerate(lst):
-            if land == 1:
-                # left and right
-                if land_idx == 0:
-                    # left side
-                    counter += 1
-
-                    # right side
-                    if lst[land_idx + 1] == 0:
-                        counter += 1
-                elif land_idx == lst_max:
-                    # left side
-                    if lst[land_idx - 1] == 0:
-                        counter += 1
-
-                    # right side
-                    counter += 1
-                else:
-                    # left side
-                    if lst[land_idx - 1] == 0:
-                        counter += 1
-
-                    # right side
-                    if lst[land_idx + 1] == 0:
-                        counter += 1
-
-                # top and down
-                if lst_idx == 0:
-                    # top side
-                    counter += 1
-
-                    # bottom side
-                    if grid[lst_idx + 1][land_idx] == 0:
-                        counter += 1
-                elif lst_idx == grid_max:
-                    # top side
-                    if grid[lst_idx - 1][land_idx] == 0:
-                        counter += 1
-
-                    # bottom side
-                    counter += 1
-                else:
-                    # top side
-                    if grid[lst_idx - 1][land_idx] == 0:
-                        counter += 1
-
-                    # bottom side
-                    if grid[lst_idx + 1][land_idx] == 0:
-                        counter += 1
-
-    return counter
+    Args:
+        grid (List[List[int]]): A 2D grid where 0 represents water and 1 represents land.
+    
+    Returns:
+        int: The perimeter of the island.
+    """
+    if not grid or not grid[0]:  # Handle empty grid
+        return 0
+    
+    rows = len(grid)
+    cols = len(grid[0])
+    perimeter = 0
+    
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1:  # Land cell
+                # Check up
+                if r == 0 or grid[r-1][c] == 0:
+                    perimeter += 1
+                # Check down
+                if r == rows-1 or grid[r+1][c] == 0:
+                    perimeter += 1
+                # Check left
+                if c == 0 or grid[r][c-1] == 0:
+                    perimeter += 1
+                # Check right
+                if c == cols-1 or grid[r][c+1] == 0:
+                    perimeter += 1
+                    
+    return perimeter
 
